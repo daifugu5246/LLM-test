@@ -1,5 +1,6 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
+import time
 # Ensure CUDA is available
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(f"Using device: {device}")
@@ -19,6 +20,9 @@ inputs = tokenizer.encode(llama_prompt, return_tensors="pt")
 inputs = inputs.to(device)
 
 # Generate
+start = time.time()
 outputs = model.generate(inputs, max_length=1024, num_return_sequences=1)
+end = time.time()
 result = tokenizer.decode(outputs[0], skip_special_tokens=True)
 print(result)
+print(f'processing time = {end - start} sec')

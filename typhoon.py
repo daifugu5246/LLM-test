@@ -1,5 +1,6 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+import time
 
 # define device
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -19,7 +20,9 @@ instr1 = Role + One-shot
 
 prompt = [{"role": "user", "content": instr0 }]
 tokenized_prompt = tokenizer([prompt], return_tensors="pt").to(model.device)
-
+start = time.time()
 out = model.generate(**tokenized_prompt, max_new_tokens=1024)
+end = time.time()
 result = tokenizer.decode(out[0])
 print(result)
+print(f'processing time = {end - start} sec')
