@@ -11,13 +11,14 @@ model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir='./model-cach
 model.to(device)
 
 # Prompt
-instr0 = open('instruction0.text', 'r', encoding='utf-8').read()
-instr1 = open('instruction1-1.text', 'r', encoding='utf-8').read()
+instr0 = open('instruction0.txt', 'r', encoding='utf-8').read()
+instr1 = open('instruction1-1.txt', 'r', encoding='utf-8').read()
+
 llama_prompt = instr0
 inputs = tokenizer.encode(llama_prompt, return_tensors="pt")
 inputs = inputs.to(device)
 
 # Generate
-outputs = model.generate(inputs, max_length=512, num_return_sequences=1)
+outputs = model.generate(inputs, max_length=1024, num_return_sequences=1)
 result = tokenizer.decode(outputs[0], skip_special_tokens=True)
 print(result)

@@ -10,17 +10,16 @@ model_path = "scb10x/typhoon-7b"
 tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir='./model-cache')
 model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir='./model-cache', device_map=device, torch_dtype=torch.float16)
 
-instr0 = open('instruction0.text', 'r', encoding='utf-8').read()
-
-instr1 = open('instruction1-2.text', 'r', encoding='utf-8').read()
+instr0 = open('instruction0.txt', 'r', encoding='utf-8').read()
+instr1 = open('instruction1-2.txt', 'r', encoding='utf-8').read()
 '''
 instr0 = Role + Context + Instruction
 instr1 = Role + One-shot
 '''
 
 prompt = [{"role": "user", "content": instr0 }]
-tokenized_prompt = tokenizer.apply_chat_template(prompt, add_generation_prompt=True, return_dict=True, return_tensors="pt").to(model.device)
+tokenized_prompt = tokenizer([prompt], return_tensors="pt").to(model.device)
 
-out = model.generate(**tokenized_prompt, max_new_tokens=512)
+out = model.generate(**tokenized_prompt, max_new_tokens=1024)
 result = tokenizer.decode(out[0])
 print(result)
