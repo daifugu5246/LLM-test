@@ -19,7 +19,7 @@ instr1 = Role + One-shot
 '''
 
 prompt = [{"role": "user", "content": instr0 }]
-tokenized_prompt = tokenizer([prompt], return_tensors="pt").to(model.device)
+tokenized_prompt = tokenizer([instr0], return_tensors="pt").to(model.device)
 start = time.time()
 out = model.generate(**tokenized_prompt, max_new_tokens=1024)
 end = time.time()
