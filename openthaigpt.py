@@ -8,8 +8,7 @@ print(f"Using device: {device}")
 # Init Model
 model_path="openthaigpt/openthaigpt-1.0.0-7b-chat"
 tokenizer = AutoTokenizer.from_pretrained(model_path ,cache_dir='./model-cache', trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir='./model-cache', trust_remote_code=True, torch_dtype=torch.float16)
-model.to(device)
+model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir='./model-cache', trust_remote_code=True, device_map=device , torch_dtype=torch.float16)
 
 # Prompt
 instr0 = open('instruction0.txt', 'r', encoding='utf-8').read()

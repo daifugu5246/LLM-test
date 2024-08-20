@@ -9,7 +9,7 @@ print(f"Using device: {device}")
 # import model
 model_path = "scb10x/typhoon-7b"
 tokenizer = AutoTokenizer.from_pretrained(model_path, cache_dir='./model-cache')
-model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir='./model-cache', device_map=device, torch_dtype=torch.float16)
+model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir='./model-cache', device_map=device ,torch_dtype=torch.float16)
 
 instr0 = open('instruction0.txt', 'r', encoding='utf-8').read()
 instr1 = open('instruction1-2.txt', 'r', encoding='utf-8').read()

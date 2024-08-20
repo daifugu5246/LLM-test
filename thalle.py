@@ -3,20 +3,32 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 import time
 
-MODEL_ID: str = "KBTG-Labs/THaLLE-0.1-7B-fa"
+# Use a pipeline as a high-level helper
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import torch
+import time
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
-        torch_dtype=torch.bfloat16,
-        device_map="auto",
-)
+
+# define device
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print(f"Using device: {device}")
+
+MODEL_ID = "KBTG-Labs/THaLLE-0.1-7B-fa"
+
+quantization_config = BitsAndBytesConfig(load_in_8bit=True)
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, cache_dir='./model-cache')
+model = AutoModelForCausalLM.from_pretrained(MODEL_ID, cache_dir='./model-cache',  device_map="cuda", torch_dtype=torch.float16)
+
+# Check if the parameters are quantized to 8-bit
+for name, param in model.named_parameters():
+    print(f"Parameter: {name}, Data type: {param.dtype}")
 
 instruct = open('Data01.txt','r', encoding='utf-8').read()
-device = "cuda" # the device to load the model onto
+
 prompt = instruct
 messages = [
-    {"role": "system", "content": "นายคือผู้เชี่ยวชาญทางด้านการวิเคราะห์หุ้นและนายจะทำการวิเคราะห์หุ้นอย่างตรงไปตรงมาตามข้อมูลที่ให้ไป"},
+    {"role": "system", "content": "คุณคือผู้เชี่ยวชาญด้านการวิเคราะห์หุ้นรายตัว และได้รับมอบหมายให้เขียนบทวิเคราะห์หุ้นตามข้อมูลที่ได้รับ"},
     {"role": "user", "content": prompt}
 ]
 text = tokenizer.apply_chat_template(
