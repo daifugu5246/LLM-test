@@ -18,15 +18,17 @@ MODEL_ID = "KBTG-Labs/THaLLE-0.1-7B-fa"
 quantization_config = BitsAndBytesConfig(load_in_8bit=True)
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, cache_dir='./model-cache')
-model = AutoModelForCausalLM.from_pretrained(MODEL_ID, cache_dir='./model-cache',  device_map=device, torch_dtype=torch.float16)
+model = AutoModelForCausalLM.from_pretrained(MODEL_ID, cache_dir='./model-cache',  device_map=device, torch_dtype=torch.bfloat16)
 
 # Check if the parameters are quantized to 8-bit
-for name, param in model.named_parameters():
-    print(f"Parameter: {name}, Data type: {param.dtype}")
+""" for name, param in model.named_parameters():
+    print(f"Parameter: {name}, Data type: {param.dtype}") """
 
-instruct = open('Data01.txt','r', encoding='utf-8').read()
+instr0 = open('instruction0.txt', 'r', encoding='utf-8').read()
+instr1 = open('instruction1-2.txt', 'r', encoding='utf-8').read()
+instr2 = open('Data01.txt','r', encoding='utf-8').read()
 
-prompt = instruct
+prompt = instr1
 messages = [
     {"role": "system", "content": "คุณคือผู้เชี่ยวชาญด้านการวิเคราะห์หุ้นรายตัว และได้รับมอบหมายให้เขียนบทวิเคราะห์หุ้นตามข้อมูลที่ได้รับ"},
     {"role": "user", "content": prompt}
@@ -41,7 +43,7 @@ model_inputs = tokenizer([text], return_tensors="pt").to(device)
 start = time.time()
 generated_ids = model.generate(
     model_inputs.input_ids,
-    max_new_tokens=1024
+    max_new_tokens=4096
 )
 end = time.time()
 generated_ids = [

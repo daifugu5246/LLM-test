@@ -8,19 +8,20 @@ print(f"Using device: {device}")
 # Init Model
 model_path="openthaigpt/openthaigpt-1.0.0-7b-chat"
 tokenizer = AutoTokenizer.from_pretrained(model_path ,cache_dir='./model-cache', trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir='./model-cache', trust_remote_code=True, device_map=device , torch_dtype=torch.float16)
+model = AutoModelForCausalLM.from_pretrained(model_path, cache_dir='./model-cache', trust_remote_code=True, device_map=device , torch_dtype=torch.bfloat16)
 
 # Prompt
 instr0 = open('instruction0.txt', 'r', encoding='utf-8').read()
 instr1 = open('instruction1-1.txt', 'r', encoding='utf-8').read()
+instr2 = open('Data01.txt', 'r', encoding='utf-8').read()
 
-llama_prompt = instr0
+llama_prompt = instr1
 inputs = tokenizer.encode(llama_prompt, return_tensors="pt")
 inputs = inputs.to(device)
 
 # Generate
 start = time.time()
-outputs = model.generate(inputs, max_length=1024, num_return_sequences=1)
+outputs = model.generate(inputs, max_length=4096, num_return_sequences=1)
 end = time.time()
 result = tokenizer.decode(outputs[0], skip_special_tokens=True)
 print(result)
