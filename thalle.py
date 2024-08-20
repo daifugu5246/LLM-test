@@ -18,7 +18,7 @@ MODEL_ID = "KBTG-Labs/THaLLE-0.1-7B-fa"
 quantization_config = BitsAndBytesConfig(load_in_8bit=True)
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, cache_dir='./model-cache')
-model = AutoModelForCausalLM.from_pretrained(MODEL_ID, cache_dir='./model-cache',  device_map="cuda", torch_dtype=torch.float16)
+model = AutoModelForCausalLM.from_pretrained(MODEL_ID, cache_dir='./model-cache',  device_map=device, torch_dtype=torch.float16)
 
 # Check if the parameters are quantized to 8-bit
 for name, param in model.named_parameters():
